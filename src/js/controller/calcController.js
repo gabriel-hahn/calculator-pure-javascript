@@ -52,12 +52,22 @@ class CalcController {
         this._dateEl.innerHTML = value;
     }
 
+    //Add multiple events
+    addEventListenerAll(element, events, fn) {
+        events.split(' ').forEach(event => {
+            element.addEventListener(event, fn, false);
+        });
+    }
+
     initButtonsEvents() {
         //Get all the children of buttons.
         let buttons = document.querySelectorAll("#buttons > g, #parts > g");
         buttons.forEach((btn, index) => {
-            btn.addEventListener('click', e => {
+            this.addEventListenerAll('click drag', e => {
 
+            });
+            this.addEventListenerAll('mouseover mouseup mousedown', e => {
+                btn.style.cursor = 'pointer';
             });
         });
     }
