@@ -61,7 +61,20 @@ class CalcController {
         this._operation.pop();
     }
 
+    getLastOperation() {
+        return this._operation[this._operation.length - 1];
+    }
+
     addOperation(value) {
+        //String
+        if (isNaN(this.getLastOperation())) {
+            
+        }
+        //Number
+        else {
+            
+        }
+
         this._operation.push(value);
     }
 
@@ -89,6 +102,8 @@ class CalcController {
                 break;
             case 'igual':
                 break;
+            case '.':
+                break;
             case '0':
             case '1':
             case '2':
@@ -104,7 +119,6 @@ class CalcController {
             default:
                 this.setError();
                 break;
-
         }
     }
 
