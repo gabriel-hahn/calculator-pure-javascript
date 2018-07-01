@@ -61,6 +61,22 @@ class CalcController {
         this._operation.pop();
     }
 
+    pushOperation(value) {
+        this._operation.push(value);
+
+        //Do the calc
+        if (this._operation.length > 3) {
+            this.calc();
+        }
+    }
+
+    calc() {
+        let last = this._operation.pop();
+        let result = eval(this._operation.join(''));
+        this._operation = [result, last];
+        this.setLastNumberToDisplay();
+    }
+
     getLastOperation() {
         return this._operation[this._operation.length - 1];
     }
@@ -73,8 +89,20 @@ class CalcController {
         return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
     }
 
+    setLastNumberToDisplay() {
+        let lastNumber;
+        for (let i = this._operation.length - 1; i >= 0; i--) {
+            if (!this.isOperator(this._operation[i])) {
+                lastNumber = this._operation[i];
+                break;
+            }
+        }
+
+        this.displayCalc = lastNumber;
+    }
+
     addOperation(value) {
-        //String
+        //Last is operation
         if (isNaN(this.getLastOperation())) {
             if (this.isOperator(value)) {
                 this.setLastOperation(value);
@@ -83,16 +111,22 @@ class CalcController {
 
             }
             else {
-                this._operation.push(value);
+                this.pushOperation(value);
+                this.setLastNumberToDisplay();
             }
         }
-        //Number
+        //Last is number
         else {
-            let newValue = this.getLastOperation().toString() + value.toString();
-            this.setLastOperation(parseInt(newValue));
-        }
+            if (this.isOperator(value)) {
+                this.pushOperation(value);
+            }
+            else {
+                let newValue = this.getLastOperation().toString() + value.toString();
+                this.setLastOperation(parseInt(newValue));
 
-        this._operation.push(value);
+                this.setLastNumberToDisplay();
+            }
+        }
     }
 
     setError() {
@@ -101,10 +135,10 @@ class CalcController {
 
     execBtn(value) {
         switch (value) {
-            case 'AC':
+            case 'ac':
                 this.clearAll();
                 break;
-            case 'CE':
+            case 'ce':
                 this.clearEntry();
                 break;
             case 'soma':
@@ -158,7 +192,6 @@ class CalcController {
         buttons.forEach((btn, index) => {
             this.addEventListenerAll(btn, 'click drag', e => {
                 let textBtn = btn.className.baseVal.replace('btn-', '');
-                console.log(textBtn);
                 this.execBtn(textBtn);
             });
             this.addEventListenerAll(btn, 'mouseover mouseup mousedown', e => {
